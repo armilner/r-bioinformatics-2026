@@ -85,8 +85,13 @@ RUN R -e "BiocManager::install(c( \
 RUN R -e "BiocManager::install(c( \
     'clusterProfiler', 'DOSE', 'enrichplot', \
     'fgsea', 'ReactomePA', 'pathview', \
-    'GSEABase', 'GSVA', 'qvalue' \
+    'GSEABase', 'GSVA', 'qvalue', \
+    'multtest' \
 ), ask = FALSE, update = FALSE)"
+
+# metap (p-value combination; required by Seurat FindConservedMarkers)
+# Depends on qqconf which needs libgsl-dev + libfftw3-dev (already installed above)
+RUN R -e "install.packages('metap', repos = Sys.getenv('CRAN'))"
 
 # ── Single-cell RNA-seq ───────────────────────────────────────────────────────
 RUN R -e "install.packages(c('Seurat', 'harmony', 'sctransform'), \
