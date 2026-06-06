@@ -39,91 +39,98 @@ apptainer exec --bind /your/project r-bioinformatics-2026.sif Rscript /your/proj
 ## What's Included
 
 ### Single-Cell RNA-seq
-| Package | Description |
-|---------|-------------|
-| Seurat v5 | Core single-cell analysis framework |
-| harmony | Integration across batches and datasets |
-| sctransform | Regularized NB normalization |
-| scran / scater / scuttle | Bioconductor single-cell utilities |
-| scDblFinder | Doublet detection |
-| speckle | Differential cell type abundance |
-| monocle3 | Trajectory and pseudotime analysis |
+| Package | Version | Description |
+|---------|---------|-------------|
+| Seurat | 5.5.0 | Core single-cell analysis framework |
+| harmony | 2.0.2 | Integration across batches and datasets |
+| sctransform | 0.4.3 | Regularized NB normalization |
+| scran | Bioc 3.19 | Bioconductor single-cell normalization |
+| scater / scuttle | Bioc 3.19 | Bioconductor single-cell utilities |
+| scDblFinder | Bioc 3.19 | Doublet detection |
+| speckle | Bioc 3.19 | Differential cell type abundance |
+| monocle3 | GitHub | Trajectory and pseudotime analysis |
 
 ### Bulk RNA-seq and Differential Expression
-| Package | Description |
-|---------|-------------|
-| DESeq2 | Negative binomial DE (pseudobulk and bulk) |
-| edgeR | Quasi-likelihood DE |
-| limma | Linear models for microarray/RNA-seq |
-| glmGamPoi | Fast GLM fitting backend for DESeq2 |
-| tximport / tximeta | Import transcript-level quantifications |
-| DEXSeq | Differential exon usage |
-| muscat | Multi-sample multi-condition single-cell DE |
-| variancePartition | Variance partitioning across covariates |
+| Package | Version | Description |
+|---------|---------|-------------|
+| DESeq2 | 1.46.0 | Negative binomial DE (pseudobulk and bulk) |
+| edgeR | Bioc 3.19 | Quasi-likelihood DE |
+| limma | Bioc 3.19 | Linear models for microarray/RNA-seq |
+| glmGamPoi | 1.18.0 | Fast GLM fitting backend for DESeq2 |
+| tximport / tximeta | Bioc 3.19 | Import transcript-level quantifications |
+| DEXSeq | Bioc 3.19 | Differential exon usage |
+| muscat | Bioc 3.19 | Multi-sample multi-condition single-cell DE |
+| variancePartition | Bioc 3.19 | Variance partitioning across covariates |
 
 ### GSEA and Pathway Analysis
-| Package | Description |
-|---------|-------------|
-| clusterProfiler | GO, KEGG, and custom GSEA |
-| fgsea | Fast preranked GSEA |
-| DOSE | Disease ontology enrichment |
-| ReactomePA | Reactome pathway analysis |
-| GSVA | Gene set variation analysis |
-| enrichplot | Visualization for enrichment results |
-| pathview | KEGG pathway visualization |
-| msigdbr | MSigDB gene sets (all species) |
+| Package | Version | Description |
+|---------|---------|-------------|
+| clusterProfiler | Bioc 3.19 | GO, KEGG, and custom GSEA |
+| fgsea | 1.32.4 | Fast preranked GSEA |
+| DOSE | 4.0.1 | Disease ontology enrichment |
+| ReactomePA | Bioc 3.19 | Reactome pathway analysis |
+| GSVA | Bioc 3.19 | Gene set variation analysis |
+| enrichplot | Bioc 3.19 | Visualization for enrichment results |
+| pathview | Bioc 3.19 | KEGG pathway visualization |
+| msigdbr | 26.1.0 | MSigDB gene sets (all species) |
 
 ### Methylation Analysis
-| Package | Description |
-|---------|-------------|
-| minfi | Illumina array methylation (450k/EPIC) |
-| methylKit | Bisulfite sequencing differential methylation |
-| BSseq | Whole-genome bisulfite sequencing |
-| DMRcate | Differentially methylated region detection |
-| sesame | SeSAMe pipeline for Illumina arrays |
-| ENmix | Array quality control and normalization |
-| missMethyl | Methylation-aware GO/KEGG testing |
+| Package | Version | Description |
+|---------|---------|-------------|
+| minfi | Bioc 3.19 | Illumina array methylation (450k/EPIC) |
+| methylKit | Bioc 3.19 | Bisulfite sequencing differential methylation |
+| BSseq | Bioc 3.19 | Whole-genome bisulfite sequencing |
+| DMRcate | Bioc 3.19 | Differentially methylated region detection |
+| sesame | Bioc 3.19 | SeSAMe pipeline for Illumina arrays |
+| ENmix | Bioc 3.19 | Array quality control and normalization |
+| missMethyl | Bioc 3.19 | Methylation-aware GO/KEGG testing |
 
 ### ATAC-seq and Chromatin
-| Package | Description |
-|---------|-------------|
-| Signac | Single-cell ATAC-seq analysis |
-| chromVAR | TF motif accessibility |
-| motifmatchr | TF motif scanning |
-| TFBSTools / JASPAR2020 | JASPAR transcription factor motifs |
-| DiffBind | Differential binding for ChIP/ATAC |
-| ChIPseeker | Peak annotation and visualization |
+| Package | Version | Description |
+|---------|---------|-------------|
+| Signac | Bioc 3.19 | Single-cell ATAC-seq analysis |
+| chromVAR | Bioc 3.19 | TF motif accessibility |
+| motifmatchr | Bioc 3.19 | TF motif scanning |
+| TFBSTools / JASPAR2020 | Bioc 3.19 | JASPAR transcription factor motifs |
+| DiffBind | Bioc 3.19 | Differential binding for ChIP/ATAC |
+| ChIPseeker | Bioc 3.19 | Peak annotation and visualization |
 
 ### Visualization
-| Package | Description |
-|---------|-------------|
-| ComplexHeatmap | Publication-quality heatmaps |
-| EnhancedVolcano | Volcano plots |
-| dittoSeq | Colorblind-friendly single-cell plots |
-| Nebulosa | Kernel density estimation on embeddings |
-| ggplot2 / patchwork / cowplot | General plotting |
-| pheatmap / ggrepel / ggridges | Supplementary visualization |
+| Package | Version | Description |
+|---------|---------|-------------|
+| ComplexHeatmap | Bioc 3.19 | Publication-quality heatmaps |
+| EnhancedVolcano | Bioc 3.19 | Volcano plots |
+| dittoSeq | Bioc 3.19 | Colorblind-friendly single-cell plots |
+| Nebulosa | Bioc 3.19 | Kernel density estimation on embeddings |
+| ggplot2 | 4.0.3 | Core plotting |
+| patchwork | 1.3.2 | Combining plots |
+| cowplot | 1.2.0 | Plot utilities |
+| ggrepel | 0.9.8 | Repelled labels |
+| ggridges | 0.5.7 | Ridge plots |
 
 ### Annotation Databases
-| Package | Description |
-|---------|-------------|
-| org.Hs.eg.db | Human gene annotation |
-| org.Mm.eg.db | Mouse gene annotation |
-| org.Rn.eg.db | Rat gene annotation |
-| GO.db | Gene Ontology |
-| TxDb.Hsapiens.UCSC.hg38.knownGene | Human hg38 transcript database |
-| TxDb.Mmusculus.UCSC.mm10.knownGene | Mouse mm10 transcript database |
-| biomaRt | Ensembl database queries |
-| AnnotationHub / ExperimentHub | Bioconductor annotation resources |
+| Package | Version | Description |
+|---------|---------|-------------|
+| org.Hs.eg.db | Bioc 3.19 | Human gene annotation |
+| org.Mm.eg.db | Bioc 3.19 | Mouse gene annotation |
+| org.Rn.eg.db | 3.20.0 | Rat gene annotation |
+| GO.db | 3.20.0 | Gene Ontology |
+| TxDb.Hsapiens.UCSC.hg38.knownGene | Bioc 3.19 | Human hg38 transcript database |
+| TxDb.Mmusculus.UCSC.mm10.knownGene | Bioc 3.19 | Mouse mm10 transcript database |
+| biomaRt | Bioc 3.19 | Ensembl database queries |
+| AnnotationHub / ExperimentHub | Bioc 3.19 | Bioconductor annotation resources |
 
 ### Infrastructure
-| Package | Description |
-|---------|-------------|
-| tidyverse | Data manipulation and plotting |
-| data.table | Fast data operations |
-| future / future.apply | Parallelization |
-| BiocManager | Bioconductor package management |
-| WGCNA | Weighted gene co-expression networks |
+| Package | Version | Description |
+|---------|---------|-------------|
+| tidyverse | CRAN | Data manipulation and plotting |
+| data.table | 1.13.6 | Fast data operations |
+| future / future.apply | 1.70.0 | Parallelization |
+| Matrix | 1.7.0 | Sparse matrix operations |
+| BiocManager | 1.30.27 | Bioconductor package management |
+| WGCNA | CRAN | Weighted gene co-expression networks |
+
+> **Note:** "Bioc 3.19" indicates the package version is pinned to the Bioconductor 3.19 release (May 2024). Exact patch versions for all packages will be added to the [releases page](https://github.com/armilner/r-bioinformatics-2026/releases) once the container build completes.
 
 ---
 
