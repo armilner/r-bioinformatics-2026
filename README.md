@@ -15,24 +15,84 @@ Built on [rocker/r-ver:4.4.1](https://rocker-project.org/) with pre-compiled bin
 
 ---
 
-## Quick Start
+## Usage
 
-### Docker
+### On HPC with Apptainer / Singularity (recommended)
+
+Most HPC clusters use Apptainer (formerly Singularity). Pull the container once, then use the `.sif` file for all subsequent runs.
+
+**1. Pull the image**
+```bash
+apptainer pull r-bioinformatics-2026.sif docker://ghcr.io/armilner/r-bioinformatics-2026:latest
+```
+
+**2. Run a script**
+```bash
+apptainer exec --bind /path/to/your/project r-bioinformatics-2026.sif \
+    Rscript /path/to/your/project/analysis.R
+```
+
+**3. Interactive R session**
+```bash
+apptainer exec --bind /path/to/your/project r-bioinformatics-2026.sif R
+```
+
+**4. Submit a SLURM job**
+```bash
+#!/bin/bash
+#SBATCH --job-name=my-analysis
+#SBATCH -N 1 -n 1 -c 16 --mem=64G --time=4:00:00
+
+SIF=/path/to/r-bioinformatics-2026.sif
+apptainer exec --bind /path/to/your/project $SIF \
+    Rscript /path/to/your/project/analysis.R
+```
+
+> **Note on `--bind`:** Apptainer does not automatically mount your filesystem. Pass `--bind /path/to/data` for every directory your script needs to read or write. You can bind multiple paths: `--bind /data,/scratch,/home/user`.
+
+---
+
+### Locally with Docker
+
+**Pull and run interactively**
 ```bash
 docker pull ghcr.io/armilner/r-bioinformatics-2026:latest
 docker run --rm -it ghcr.io/armilner/r-bioinformatics-2026:latest R
 ```
 
-### Apptainer / Singularity (HPC)
+**Run a script with your project mounted**
 ```bash
-apptainer pull r-bioinformatics-2026.sif docker://ghcr.io/armilner/r-bioinformatics-2026:latest
-apptainer exec r-bioinformatics-2026.sif Rscript your_script.R
+docker run --rm \
+    -v /path/to/your/project:/project \
+    ghcr.io/armilner/r-bioinformatics-2026:latest \
+    Rscript /project/analysis.R
 ```
 
-### Apptainer with bound filesystem (recommended on HPC)
+**RStudio in the browser (via rocker)**
 ```bash
-apptainer exec --bind /your/project r-bioinformatics-2026.sif Rscript /your/project/script.R
+docker run --rm -p 8787:8787 \
+    -e PASSWORD=yourpassword \
+    -v /path/to/your/project:/home/rstudio/project \
+    ghcr.io/armilner/r-bioinformatics-2026:latest
 ```
+Then open `http://localhost:8787` in your browser (username: `rstudio`, password: as set above).
+
+---
+
+### Installing additional packages at runtime
+
+All packages listed below are pre-installed. If you need something extra without rebuilding the container, install into a user library that persists on your mounted filesystem:
+
+```r
+# In your R script or interactively
+dir.create("~/R/library", recursive = TRUE, showWarnings = FALSE)
+.libPaths(c("~/R/library", .libPaths()))
+install.packages("extrapackage")
+# or
+BiocManager::install("extrapackage")
+```
+
+As long as `~` (your home directory) is bound to persistent storage, the installed packages survive across container runs.
 
 ---
 
@@ -131,19 +191,6 @@ apptainer exec --bind /your/project r-bioinformatics-2026.sif Rscript /your/proj
 | WGCNA | CRAN | Weighted gene co-expression networks |
 
 > **Note:** "Bioc 3.19" indicates the package version is pinned to the Bioconductor 3.19 release (May 2024). Exact patch versions for all packages will be added to the [releases page](https://github.com/armilner/r-bioinformatics-2026/releases) once the container build completes.
-
----
-
-## Usage on SLURM / HPC
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=my-analysis
-#SBATCH -N 1 -n 1 -c 16 --mem=64G
-
-SIF=/path/to/r-bioinformatics-2026.sif
-apptainer exec --bind /your/project $SIF Rscript /your/project/analysis.R
-```
 
 ---
 
