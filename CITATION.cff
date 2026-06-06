@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: r-bioinformatics-2026
+message: "If you use this container in your work, please cite it using the metadata below."
+type: software
+authors:
+  - family-names: Milner
+    given-names: Andrew
+    orcid: https://orcid.org/0009-0006-8313-913X
+repository-code: https://github.com/armilner/r-bioinformatics-2026
+abstract: >
+  A comprehensive, ready-to-use R container for bioinformatics analysis.
+  Covers single-cell RNA-seq, bulk RNA-seq, methylation, ATAC-seq, trajectory
+  analysis, and pathway enrichment. Built on R 4.4.1 with Bioconductor 3.19.
+  Designed for reproducible use on HPC clusters via Apptainer/Singularity or
+  locally via Docker.
+version: 1.0.0
+date-released: "2026-06-05"
+license: MIT
+keywords:
+  - bioinformatics
+  - single-cell RNA-seq
+  - RNA-seq
+  - methylation
+  - ATAC-seq
+  - R
+  - container
+  - reproducibility

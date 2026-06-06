@@ -206,6 +206,17 @@ Container images are built automatically via GitHub Actions and pushed to the Gi
 
 ---
 
+## Citation
+
+If you use this container in your work, please cite it. GitHub will display a **"Cite this repository"** button on the repo page (top right of the About panel) with auto-formatted citations in APA, BibTeX, and other styles.
+
+```
+Milner, A. (2026). r-bioinformatics-2026 (v1.0.0). GitHub.
+https://github.com/armilner/r-bioinformatics-2026
+```
+
+---
+
 ## License
 
 MIT License — free to use, modify, and distribute with attribution.
