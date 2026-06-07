@@ -82,6 +82,8 @@ RUN R -e "BiocManager::install(c( \
 ), ask = FALSE, update = FALSE)"
 
 # ── GSEA and pathway analysis ─────────────────────────────────────────────────
+# ggtree must precede enrichplot/clusterProfiler — enrichplot depends on it
+RUN R -e "BiocManager::install('ggtree', ask = FALSE, update = FALSE)"
 RUN R -e "BiocManager::install(c( \
     'clusterProfiler', 'DOSE', 'enrichplot', \
     'fgsea', 'ReactomePA', 'pathview', \
