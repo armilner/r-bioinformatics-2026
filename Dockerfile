@@ -82,8 +82,12 @@ RUN R -e "BiocManager::install(c( \
 ), ask = FALSE, update = FALSE)"
 
 # ── GSEA and pathway analysis ─────────────────────────────────────────────────
-# ggtree must precede enrichplot/clusterProfiler — enrichplot depends on it
-RUN R -e "BiocManager::install('ggtree', ask = FALSE, update = FALSE)"
+# ggtree 3.12 (Bioc 3.19) calls ggplot2::check_linewidth which was removed in ggplot2 4.0.
+# ggtree 4.x (GitHub) requires yulab.utils >= 0.2.3 and ggiraph >= 0.9.1 — newer than
+# the CRAN snapshot frozen into this image. Install those deps from latest CRAN first.
+RUN R -e "install.packages(c('yulab.utils','ggiraph','ggfun','aplot','treeio','tidytree'), \
+    repos = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')"
+RUN R -e "remotes::install_github('YuLab-SMU/ggtree', upgrade = 'never')"
 RUN R -e "BiocManager::install(c( \
     'clusterProfiler', 'DOSE', 'enrichplot', \
     'fgsea', 'ReactomePA', 'pathview', \
@@ -138,3 +142,4 @@ for (p in pkgs) { \
   v <- tryCatch(as.character(packageVersion(p)), error = function(e) 'MISSING'); \
   cat(sprintf('%-25s %s\n', p, v)) \
 }"
+
