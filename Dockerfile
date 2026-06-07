@@ -82,11 +82,13 @@ RUN R -e "BiocManager::install(c( \
 ), ask = FALSE, update = FALSE)"
 
 # ── GSEA and pathway analysis ─────────────────────────────────────────────────
-# ggtree 3.12 (Bioc 3.19) calls ggplot2::check_linewidth which was removed in ggplot2 4.0.
-# ggtree 4.x (GitHub) requires yulab.utils >= 0.2.3 and ggiraph >= 0.9.1 — newer than
-# the CRAN snapshot frozen into this image. Install those deps from latest CRAN first.
-RUN R -e "install.packages(c('yulab.utils','ggiraph','ggfun','aplot','treeio','tidytree'), \
+# Bioc 3.19 versions of treeio/ggtree use ggplot2 internals removed in ggplot2 4.0
+# (check_linewidth in ggtree, random_ref in treeio). Install all three yulab packages
+# from GitHub (latest). CRAN deps (ggiraph >= 0.9.1, yulab.utils >= 0.2.3) must come
+# from latest CRAN — the frozen 2024-10-30 snapshot in this image is too old.
+RUN R -e "install.packages(c('yulab.utils','ggiraph','ggfun','aplot','tidytree'), \
     repos = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')"
+RUN R -e "remotes::install_github('YuLab-SMU/treeio', upgrade = 'never')"
 RUN R -e "remotes::install_github('YuLab-SMU/ggtree', upgrade = 'never')"
 RUN R -e "BiocManager::install(c( \
     'clusterProfiler', 'DOSE', 'enrichplot', \
