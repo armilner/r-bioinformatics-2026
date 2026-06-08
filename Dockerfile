@@ -47,6 +47,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN R -e "install.packages(c('BiocManager', 'remotes'), repos = Sys.getenv('CRAN'))" && \
     R -e "BiocManager::install(version = Sys.getenv('BIOCONDUCTOR_VERSION'), ask = FALSE)"
 
+# RcppArmadillo 14+ requires C++14, but Bioc 3.19 packages (glmGamPoi, chromVAR,
+# motifmatchr) declare CXX_STD=CXX11 in their Makevars. Remap the C++11 standard
+# flag to -std=gnu++14; C++14 is a strict superset so all C++11 code compiles clean.
+RUN echo 'CXX11STD = -std=gnu++14' >> /usr/local/lib/R/etc/Makevars.site
+
 # ── Core CRAN: data, parallelism, visualization ───────────────────────────────
 # Note: WGCNA is installed later, after Bioc, because it requires preprocessCore (Bioc).
 RUN R -e "install.packages(c( \
@@ -124,7 +129,10 @@ RUN R -e "BiocManager::install(c( \
 RUN R -e "BiocManager::install(c('chromVAR', 'motifmatchr'), ask = FALSE, update = FALSE)"
 
 # ── Methylation analysis ──────────────────────────────────────────────────────
-# BSseq is not available for Bioconductor 3.19 — omitted.
+# methylKit 1.30.0 uses data.table::key<- which was removed in data.table 1.16.0
+# (released Sep 2024). Reinstall data.table from a pre-1.16.0 CRAN snapshot so
+# methylKit can lazy-load successfully. BSseq is not available for Bioc 3.19 — omitted.
+RUN R -e "install.packages('data.table', repos = 'https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01')"
 RUN R -e "BiocManager::install(c( \
     'minfi', 'methylKit', \
     'DMRcate', 'sesame', 'ENmix', 'missMethyl' \
