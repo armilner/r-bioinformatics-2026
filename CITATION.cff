@@ -7,6 +7,8 @@ authors:
     given-names: Andrew
     orcid: https://orcid.org/0009-0006-8313-913X
 repository-code: https://github.com/armilner/r-bioinformatics-2026
+doi: 10.5281/zenodo.20566244
+url: https://doi.org/10.5281/zenodo.20566244
 abstract: >
   A comprehensive, ready-to-use R container for bioinformatics analysis.
   Covers single-cell RNA-seq, bulk RNA-seq, methylation, ATAC-seq, trajectory

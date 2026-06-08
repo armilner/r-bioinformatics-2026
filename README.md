@@ -6,6 +6,7 @@
 [![Seurat](https://img.shields.io/badge/Seurat-v5-blueviolet)](https://satijalab.org/seurat/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 [![Apptainer](https://img.shields.io/badge/Apptainer-compatible-orange)](https://apptainer.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20566244.svg)](https://doi.org/10.5281/zenodo.20566244)
 
 ---
 
@@ -244,8 +245,8 @@ methylKit 1.30.0 calls `data.table::key<-` during lazy loading, which was remove
 If you use this container in your work, please cite it. GitHub will display a **"Cite this repository"** button on the repo page (top right of the About panel) with auto-formatted citations in APA, BibTeX, and other styles.
 
 ```
-Milner, A. (2026). r-bioinformatics-2026 (v1.0.0). GitHub.
-https://github.com/armilner/r-bioinformatics-2026
+Milner, A. (2026). r-bioinformatics-2026 (v1.0.0). Zenodo.
+https://doi.org/10.5281/zenodo.20566244
 ```
 
 ---
