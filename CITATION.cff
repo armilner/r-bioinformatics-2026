@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: r-bioinformatics-2026
+title: "A Comprehensive R Container for Reproducible Bioinformatics Analysis on HPC Clusters in 2026"
 message: "If you use this container in your work, please cite it using the metadata below."
 type: software
 authors:
