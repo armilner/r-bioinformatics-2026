@@ -9,9 +9,22 @@
 
 ---
 
-A comprehensive, ready-to-use R container for bioinformatics analysis built for 2026. Designed for use on HPC clusters via Apptainer/Singularity or locally via Docker. Covers single-cell RNA-seq, bulk RNA-seq, methylation, ATAC-seq, trajectory analysis, and pathway enrichment — no setup required.
+R container for bioinformatics analysis covering single-cell RNA-seq, bulk RNA-seq, methylation, ATAC-seq, trajectory analysis, and pathway enrichment. No setup required beyond pulling the image.
 
-Built on [rocker/r-ver:4.4.1](https://rocker-project.org/) with pre-compiled binaries from [Posit Package Manager](https://packagemanager.posit.co/) for fast, reproducible builds.
+Built on [rocker/r-ver:4.4.1](https://rocker-project.org/) with pre-compiled binaries from [Posit Package Manager](https://packagemanager.posit.co/).
+
+## Why this container exists
+
+Installing R bioinformatics packages from scratch on an HPC cluster is slow and fragile, and results differ across machines as package versions drift. This container was originally built to support snRNA-seq and genomics analyses on the [Anvil HPC cluster](https://www.rcac.purdue.edu/anvil/) at Purdue, where users cannot install system libraries or modify the base R environment.
+
+Problems it solves:
+
+- **Reproducibility.** The same image runs identically on any machine with Apptainer or Docker, now or in the future.
+- **HPC compatibility.** Distributed as a Docker image; Apptainer pulls and converts it to a `.sif` file, compatible with any cluster running Apptainer/Singularity.
+- **Dependency conflicts pre-resolved.** Several packages in this set have non-obvious version incompatibilities that cause silent failures on a standard CRAN/Bioconductor install (see Build Notes below).
+- **No compilation wait.** CRAN packages are pulled as pre-compiled Ubuntu Jammy binaries from Posit Package Manager. Packages requiring compilation (Bioconductor, GitHub) are built once at image creation time.
+
+Use this container for any R-based bioinformatics analysis on a cluster where you cannot modify the system environment, or any workflow where the R environment needs to be reproducible across machines or time.
 
 ---
 
@@ -117,6 +130,7 @@ As long as `~` (your home directory) is bound to persistent storage, the install
 | DESeq2 | 1.44.0 | Negative binomial DE (pseudobulk and bulk) |
 | edgeR | 4.2.2 | Quasi-likelihood DE |
 | limma | 3.60.6 | Linear models for microarray/RNA-seq |
+| glmGamPoi | 1.16.0 | Fast GLM fitting backend for DESeq2 |
 | tximport | 1.32.0 | Import transcript-level quantifications |
 | tximeta | 1.22.1 | Import transcript-level quantifications with metadata |
 | DEXSeq | 1.50.0 | Differential exon usage |
@@ -138,6 +152,7 @@ As long as `~` (your home directory) is bound to persistent storage, the install
 | Package | Version | Description |
 |---------|---------|-------------|
 | minfi | 1.50.0 | Illumina array methylation (450k/EPIC) |
+| methylKit | 1.30.0 | Bisulfite sequencing differential methylation |
 | DMRcate | 3.0.10 | Differentially methylated region detection |
 | sesame | 1.22.2 | SeSAMe pipeline for Illumina arrays |
 | ENmix | 1.40.2 | Array quality control and normalization |
@@ -147,6 +162,8 @@ As long as `~` (your home directory) is bound to persistent storage, the install
 | Package | Version | Description |
 |---------|---------|-------------|
 | Signac | 1.14.0 | Single-cell ATAC-seq analysis |
+| chromVAR | 1.26.0 | Transcription factor accessibility variability |
+| motifmatchr | 1.26.0 | Motif matching in genomic ranges |
 | TFBSTools | 1.42.0 | Transcription factor binding site analysis |
 | JASPAR2020 | 0.99.10 | JASPAR transcription factor motifs |
 | DiffBind | 3.14.0 | Differential binding for ChIP/ATAC |
@@ -182,7 +199,7 @@ As long as `~` (your home directory) is bound to persistent storage, the install
 | Package | Version | Description |
 |---------|---------|-------------|
 | tidyverse | 2.0.0 | Data manipulation and plotting |
-| data.table | 1.18.4 | Fast data operations |
+| data.table | 1.16.0 | Fast data operations |
 | future | 1.70.0 | Parallelization |
 | future.apply | 1.20.2 | Parallelization helpers |
 | Matrix | 1.7-5 | Sparse matrix operations |
@@ -202,6 +219,26 @@ Container images are built automatically via GitHub Actions and pushed to the Gi
 
 ---
 
+## Build Notes
+
+Two non-obvious dependency issues required workarounds that are documented here for reproducibility.
+
+**RcppArmadillo C++14 requirement (glmGamPoi, chromVAR, motifmatchr)**
+
+RcppArmadillo 14+ requires C++14, but several Bioconductor 3.19 packages declare `CXX_STD=CXX11` in their Makevars, causing compilation to fail with `*** C++14 compiler required`. The fix is one line added to `Makevars.site` after the BiocManager setup step:
+
+```
+CXX11STD = -std=gnu++14
+```
+
+This remaps the C++11 compiler invocation to use C++14 flags. C++14 is a strict superset of C++11, so all existing C++11 code compiles without modification.
+
+**data.table version pin (methylKit)**
+
+methylKit 1.30.0 calls `data.table::key<-` during lazy loading, which was removed in a data.table release after September 2024. Installing data.table from the Posit Package Manager CRAN snapshot for `2024-09-01` provides a compatible version. This pin is applied immediately before the methylKit install step so it does not affect other packages that benefit from a newer data.table.
+
+---
+
 ## Citation
 
 If you use this container in your work, please cite it. GitHub will display a **"Cite this repository"** button on the repo page (top right of the About panel) with auto-formatted citations in APA, BibTeX, and other styles.
@@ -215,4 +252,4 @@ https://github.com/armilner/r-bioinformatics-2026
 
 ## License
 
-MIT License — free to use, modify, and distribute with attribution.
+MIT License. Free to use, modify, and distribute with attribution.
