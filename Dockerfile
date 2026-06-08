@@ -145,25 +145,25 @@ RUN R -e "install.packages(c('terra', 'sf', 'leidenbase'), \
 RUN R -e "install.packages('WGCNA', repos = Sys.getenv('CRAN'))"
 
 # ── Verify all packages installed — fails the build if anything is missing ────
-RUN R -e "
-pkgs <- c(
-  'Seurat', 'harmony', 'sctransform', 'scran', 'scater', 'scuttle',
-  'scDblFinder', 'speckle', 'monocle3',
-  'DESeq2', 'edgeR', 'limma', 'glmGamPoi', 'tximport', 'tximeta',
-  'DEXSeq', 'muscat', 'variancePartition',
-  'clusterProfiler', 'fgsea', 'DOSE', 'ReactomePA', 'GSVA',
-  'enrichplot', 'pathview', 'msigdbr',
-  'minfi', 'methylKit', 'DMRcate', 'sesame', 'ENmix', 'missMethyl',
-  'Signac', 'chromVAR', 'motifmatchr', 'TFBSTools', 'JASPAR2020',
-  'DiffBind', 'ChIPseeker',
-  'ComplexHeatmap', 'EnhancedVolcano', 'dittoSeq', 'Nebulosa',
-  'ggplot2', 'patchwork', 'cowplot', 'ggrepel', 'ggridges',
-  'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'GO.db',
-  'tidyverse', 'data.table', 'future', 'Matrix', 'BiocManager', 'WGCNA'
-)
-missing <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]
-if (length(missing) > 0) stop(paste('Build failed — missing packages:', paste(missing, collapse = ', ')))
-ip <- installed.packages()[, 'Version']
-for (p in pkgs) cat(sprintf('%-50s %s\n', p, ip[p]))
-cat('All packages verified.\n')
+RUN R -e " \
+pkgs <- c( \
+  'Seurat','harmony','sctransform','scran','scater','scuttle', \
+  'scDblFinder','speckle','monocle3', \
+  'DESeq2','edgeR','limma','glmGamPoi','tximport','tximeta', \
+  'DEXSeq','muscat','variancePartition', \
+  'clusterProfiler','fgsea','DOSE','ReactomePA','GSVA', \
+  'enrichplot','pathview','msigdbr', \
+  'minfi','methylKit','DMRcate','sesame','ENmix','missMethyl', \
+  'Signac','chromVAR','motifmatchr','TFBSTools','JASPAR2020', \
+  'DiffBind','ChIPseeker', \
+  'ComplexHeatmap','EnhancedVolcano','dittoSeq','Nebulosa', \
+  'ggplot2','patchwork','cowplot','ggrepel','ggridges', \
+  'org.Hs.eg.db','org.Mm.eg.db','org.Rn.eg.db','GO.db', \
+  'tidyverse','data.table','future','Matrix','BiocManager','WGCNA' \
+); \
+missing <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]; \
+if (length(missing) > 0) stop(paste('Build failed - missing packages:', paste(missing, collapse = ', '))); \
+ip <- installed.packages()[, 'Version']; \
+for (p in pkgs) cat(sprintf('%-50s %s\n', p, ip[p])); \
+cat('All packages verified.\n') \
 "
