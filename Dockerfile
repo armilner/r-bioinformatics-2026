@@ -25,6 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libjpeg-dev \
     libtiff5-dev \
+    # ImageMagick C++ (required by magick → EBImage → SpatialExperiment → GSVA;
+    # also needed by Gviz → methylKit lazy loading)
+    libmagick++-dev \
     # Compression
     libbz2-dev \
     liblzma-dev \
@@ -45,6 +48,7 @@ RUN R -e "install.packages(c('BiocManager', 'remotes'), repos = Sys.getenv('CRAN
     R -e "BiocManager::install(version = Sys.getenv('BIOCONDUCTOR_VERSION'), ask = FALSE)"
 
 # ── Core CRAN: data, parallelism, visualization ───────────────────────────────
+# Note: WGCNA is installed later, after Bioc, because it requires preprocessCore (Bioc).
 RUN R -e "install.packages(c( \
     'tidyverse', 'data.table', 'Matrix', \
     'future', 'future.apply', 'parallelly', \
@@ -52,7 +56,7 @@ RUN R -e "install.packages(c( \
     'scales', 'viridis', 'RColorBrewer', \
     'ggrepel', 'patchwork', 'cowplot', \
     'pheatmap', 'ggridges', 'gridExtra', 'ggpubr', \
-    'msigdbr', 'WGCNA' \
+    'msigdbr' \
 ), repos = Sys.getenv('CRAN'))"
 
 # ── Bioconductor core infrastructure ─────────────────────────────────────────
@@ -112,14 +116,17 @@ RUN R -e "BiocManager::install(c( \
 
 # ── ATAC-seq and chromatin accessibility ──────────────────────────────────────
 RUN R -e "BiocManager::install(c( \
-    'Signac', 'chromVAR', 'motifmatchr', \
-    'TFBSTools', 'JASPAR2020', \
+    'Signac', 'TFBSTools', 'JASPAR2020', \
     'DiffBind', 'ChIPseeker' \
 ), ask = FALSE, update = FALSE)"
 
+# chromVAR and motifmatchr in a dedicated step for clear error reporting
+RUN R -e "BiocManager::install(c('chromVAR', 'motifmatchr'), ask = FALSE, update = FALSE)"
+
 # ── Methylation analysis ──────────────────────────────────────────────────────
+# BSseq is not available for Bioconductor 3.19 — omitted.
 RUN R -e "BiocManager::install(c( \
-    'minfi', 'methylKit', 'BSseq', \
+    'minfi', 'methylKit', \
     'DMRcate', 'sesame', 'ENmix', 'missMethyl' \
 ), ask = FALSE, update = FALSE)"
 
@@ -134,14 +141,29 @@ RUN R -e "install.packages(c('terra', 'sf', 'leidenbase'), \
     repos = Sys.getenv('CRAN'))" && \
     R -e "remotes::install_github('cole-trapnell-lab/monocle3', upgrade = 'never')"
 
-# ── Print installed versions to stdout at build time ─────────────────────────
-RUN R -e " \
-pkgs <- c('Seurat','DESeq2','edgeR','limma','clusterProfiler', \
-          'minfi','methylKit','BSseq','DMRcate','sesame', \
-          'Signac','monocle3','muscat','speckle','GSVA', \
-          'ComplexHeatmap','EnhancedVolcano','harmony','sctransform'); \
-for (p in pkgs) { \
-  v <- tryCatch(as.character(packageVersion(p)), error = function(e) 'MISSING'); \
-  cat(sprintf('%-25s %s\n', p, v)) \
-}"
+# ── WGCNA — must come after Bioc (requires preprocessCore, impute, GO.db) ────
+RUN R -e "install.packages('WGCNA', repos = Sys.getenv('CRAN'))"
 
+# ── Verify all packages installed — fails the build if anything is missing ────
+RUN R -e "
+pkgs <- c(
+  'Seurat', 'harmony', 'sctransform', 'scran', 'scater', 'scuttle',
+  'scDblFinder', 'speckle', 'monocle3',
+  'DESeq2', 'edgeR', 'limma', 'glmGamPoi', 'tximport', 'tximeta',
+  'DEXSeq', 'muscat', 'variancePartition',
+  'clusterProfiler', 'fgsea', 'DOSE', 'ReactomePA', 'GSVA',
+  'enrichplot', 'pathview', 'msigdbr',
+  'minfi', 'methylKit', 'DMRcate', 'sesame', 'ENmix', 'missMethyl',
+  'Signac', 'chromVAR', 'motifmatchr', 'TFBSTools', 'JASPAR2020',
+  'DiffBind', 'ChIPseeker',
+  'ComplexHeatmap', 'EnhancedVolcano', 'dittoSeq', 'Nebulosa',
+  'ggplot2', 'patchwork', 'cowplot', 'ggrepel', 'ggridges',
+  'org.Hs.eg.db', 'org.Mm.eg.db', 'org.Rn.eg.db', 'GO.db',
+  'tidyverse', 'data.table', 'future', 'Matrix', 'BiocManager', 'WGCNA'
+)
+missing <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]
+if (length(missing) > 0) stop(paste('Build failed — missing packages:', paste(missing, collapse = ', ')))
+ip <- installed.packages()[, 'Version']
+for (p in pkgs) cat(sprintf('%-50s %s\n', p, ip[p]))
+cat('All packages verified.\n')
+"
